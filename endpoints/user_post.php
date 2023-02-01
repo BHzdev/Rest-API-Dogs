@@ -17,7 +17,7 @@
       return rest_ensure_response($response);
     }
 
-    //Inserindo os dados no user
+    //Criando um novo user e inserindo os dados
     $response = wp_insert_user([
       'user_login' => $username,
       'user_email' => $email,
