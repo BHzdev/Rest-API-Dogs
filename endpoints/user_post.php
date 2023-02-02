@@ -24,10 +24,12 @@
       'user_pass' => $password,
       'role' => 'subscriber'
     ]);
-
+    
+    // Retorna os dados no formato de "response" de REST API.
     return rest_ensure_response($response);
   }
 
+  // Função para registrar o endpoint da API.
   function register_api_user_post(){
     register_rest_route('api', '/user', [
       'methods' => WP_REST_Server::CREATABLE,
