@@ -1,7 +1,13 @@
 <?php
 function api_comment_get($request) {
+  $post_id = $request["id"];
 
-  return rest_ensure_response($comment);
+  // Puxa todos os comentários do post.
+  $comments = get_comments([
+      "post_id" => $post_id
+  ]);
+
+  return rest_ensure_response($comments);
 }
 
 // Função para registrar o endpoint da API.
