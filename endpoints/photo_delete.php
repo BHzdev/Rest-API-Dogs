@@ -9,6 +9,14 @@ function api_photo_delete($request) {
   $author_id = (int) $post->post_author;
   $user_id = (int) $user->ID;
 
+  // Verifica se o id do autor é diferente do id do usuário logado, e se o post existe.
+  if ($user_id !== $author_id || !isset($post)) {
+    $reponse = new WP_Erro("error", "Sem permissão.", [
+        "status" => 401
+    ]);
+    return rest_ensure_response($response);
+  }
+
   return rest_ensure_response("Post deletado.");
 }
 
