@@ -2,13 +2,23 @@
 function api_comment_post($request) {
   // Busca os dados do usuáiro que está logado.
   $user = wp_get_current_user();
-  $post_id = $request["id"];
-  $user_id = (int) $user->ID;
-
-  // Verifica se o id do autor é diferente do id do usuário logado, e se o post existe.
-  if ($user_id !== $author_id || !isset($post)) {
+  $user_id = $user->ID;
+  
+  // Verifica se o usuário está logado.
+  if ($user_id === 0) {
     $reponse = new WP_Erro("error", "Sem permissão.", [
-        "status" => 401
+      "status" => 401
+    ]);
+    return rest_ensure_response($response);
+  }
+
+  $comment = sanitize_text_field($request['comment']);
+  $post_id = $request["id"]; 
+
+  // Verifica se o comentário está vazio
+  if(empty($comment)){
+    $reponse = new WP_Erro("error", "Dados Incompletos.", [
+      "status" => 422
     ]);
     return rest_ensure_response($response);
   }
