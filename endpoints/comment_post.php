@@ -6,7 +6,7 @@ function api_comment_post($request) {
   
   // Verifica se o usuário está logado.
   if ($user_id === 0) {
-    $reponse = new WP_Erro("error", "Sem permissão.", [
+    $response = new WP_Erro("error", "Sem permissão.", [
       "status" => 401
     ]);
     return rest_ensure_response($response);
@@ -17,7 +17,7 @@ function api_comment_post($request) {
 
   // Verifica se o comentário está vazio
   if(empty($comment)){
-    $reponse = new WP_Erro("error", "Dados Incompletos.", [
+    $response = new WP_Erro("error", "Dados Incompletos.", [
       "status" => 422
     ]);
     return rest_ensure_response($response);
