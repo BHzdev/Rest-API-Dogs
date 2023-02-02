@@ -23,8 +23,20 @@ function api_comment_post($request) {
     return rest_ensure_response($response);
   }
 
+  // Pegando as informações necessárias para o comentário.
+  $response = [
+    "comment_author" => $user->user_login,
+    "comment_content" => $comment,
+    "comment_post_ID" => $post_id,
+    "user_id" => $user_id
+  ];
 
-  return rest_ensure_response("Post deletado.");
+  // Inserindo o comentário no post.
+  $comment_id = wp_insert_comment($response);
+  // Buscando o comentário.
+  $comment = get_comment($comment_id);
+
+  return rest_ensure_response($comment);
 }
 
 // Função para registrar o endpoint da API.
