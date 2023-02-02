@@ -4,6 +4,8 @@
   $dirbase = get_template_directory();
   require_once $dirbase . '/endpoints/user_post.php';
   require_once $dirbase . '/endpoints/user_get.php';
+  
+  require_once $dirbase . '/endpoints/photo_post.php';
 
   function change_api(){
     return 'json';
