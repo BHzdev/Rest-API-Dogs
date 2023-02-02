@@ -17,6 +17,13 @@ function api_photo_delete($request) {
     return rest_ensure_response($response);
   }
 
+      // Pega o id da imagem do post.
+      $attachment_id = get_post_meta($post_id, "img", true);
+      // Depois deleta a imagem.
+      wp_delete_attachment($attachment_id, true);
+      // Depois deleta o post.
+      wp_delete_post($post_id, true);
+
   return rest_ensure_response("Post deletado.");
 }
 
