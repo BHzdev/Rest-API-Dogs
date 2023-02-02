@@ -1,5 +1,4 @@
 <?php
-// Define a função que lida com os dados da requisição.
 function api_photo_delete($request) {
   // Busca os dados do usuáiro que está logado.
   $user = wp_get_current_user();
