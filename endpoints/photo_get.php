@@ -80,7 +80,7 @@ function api_photos_get($request) {
   // Argumentos para serem usados na busca dos posts.
   $args = [
       "post_type" => "post",
-      "author" => 0,
+      "author" => $_user,
       "posts_per_page" => $_total,
       "paged" => $_page
   ];
