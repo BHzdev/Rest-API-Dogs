@@ -30,10 +30,12 @@ function api_photo_get($request) {
   ]);
   return rest_ensure_response($response);
   }
-  
+
   $photo = photo_data($post);
 
-  return rest_ensure_response($post);
+  $photo['acessos'] = (int) $photo['acessos'] + 1;
+
+  return rest_ensure_response($photo);
 }
 
 // Função para registrar o endpoint da API.
