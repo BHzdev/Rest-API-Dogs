@@ -1,4 +1,24 @@
 <?php
+function photo_data($post){
+    $post_meta = get_post_meta($post->ID);
+    $src = wp_get_attachment_image_src($post_meta["img"][0], "large")[0];
+    $user = get_userdata($post->post_author);
+    $total_comments = get_comments_number($post->ID);
+
+    // Retorna os dados estruturados.
+    return [
+        "id" => $post->ID,
+        "author" => $user->user_login,
+        "title" => $post->post_title,
+        "date" => $post->post_date,
+        "src" => $src,
+        "peso" => $post_meta["peso"][0],
+        "idade" => $post_meta["idade"][0],
+        "acessos" => $post_meta["acessos"][0],
+        "total_comments" => $total_comments
+    ];
+}
+
 function api_photo_get($request) {
   $post_id = $request["id"];
   $post = get_post($post_id);
@@ -10,6 +30,8 @@ function api_photo_get($request) {
   ]);
   return rest_ensure_response($response);
   }
+  
+  $photo = photo_data($post);
 
   return rest_ensure_response($post);
 }
