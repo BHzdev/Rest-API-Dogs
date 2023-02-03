@@ -15,8 +15,8 @@ function api_password_lost($request) {
 
   // Validação para que o usuario consiga entrar tanto com o email quando seu nome de usuario(login)
   if(empty($user)){
-    $user = get_user_by('login', $login)
-  }
+    $user = get_user_by('login', $login);
+  };
 
   // Verifica se o usuário existe.
   if (empty($login)) {
@@ -24,9 +24,22 @@ function api_password_lost($request) {
         "status" => 401
     ]);
     return rest_ensure_response($response);
-  }
+  };
+
+  // Dados do usuario
+  $user_login = $user->user_login;
+  $user_email = $user->user_email;
+  $key = get_password_reset_key($user);
+
+  // Escrevendo a mensagem (url) que vai ser enviada para o usuario
+  $message = "Utilize o link abaixo para resetar a sua senha : \r\n";
+  $url = esc_url_raw($url . "/?key=$key&login=" . rawurlencode($user_login) . "\r\n");
+  $body = $message . $url;
   
-  return rest_ensure_response($request);
+  // Enviando a mensagem via email para o usuario
+  wp_mail($user_email, "Password Reset", $body);
+  
+  return rest_ensure_response("Email enviado.");
 }
 
 // Função para registrar o endpoint da API.
