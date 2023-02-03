@@ -32,9 +32,21 @@ function api_photo_get($request) {
   }
 
   $photo = photo_data($post);
+  // Altera o valor de acesso do post a cada requisição.
+  $photo["acessos"] = (int) $photo["acessos"] + 1;
+  // Atualiza o valor de acessos no banco.
+  update_post_meta($post->ID, "acessos", $photo["acessos"]);
 
-  $photo['acessos'] = (int) $photo['acessos'] + 1;
+  $comments = get_comments([
+    'post-id' => $post_id,
+    'order' => 'ASC'
+  ]);
 
+  $response = [
+    'photo' => $photo,
+    'comments' => $comments
+  ]; 
+  
   return rest_ensure_response($photo);
 }
 
