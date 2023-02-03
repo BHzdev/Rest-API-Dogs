@@ -51,4 +51,36 @@ function register_api_password_lost() {
 }
 
 add_action('rest_api_init', 'register_api_password_lost');
+
+// Password Reset
+
+function api_password_reset($request) {
+  $login = $request["login"];
+  $password = $request["password"];
+  $key = $request["key"];
+
+  $user = get_user_by("login", $login);
+
+  // Verifica se o usuário existe.
+  if (empty($user)) {
+    $reponse = new WP_Erro("error", "Usuário não existe.", [
+        "status" => 401
+    ]);
+
+    return rest_ensure_response($response);
+  }
+
+  return rest_ensure_response("Email enviado.");
+}
+
+// Função para registrar o endpoint da API.
+function register_api_password_reset() {
+  register_rest_route('api', '/password/reset', [
+      'methods' => WP_REST_Server::CREATABLE,
+      'callback' => 'api_password_reset'
+  ]);
+}
+
+add_action('rest_api_init', 'register_api_password_reset');
+
 ?>
