@@ -63,22 +63,18 @@ add_action('rest_api_init', 'register_api_photo_get');
 
 function api_photos_get($request) {
   $_total = sanitize_text_field($request["_total"]) ?: 6;
-  $_page = sanitize_text_fie   ld($request["_page"]) ?: 1;
+  $_page = sanitize_text_field($request["_page"]) ?: 1;
   $_user = sanitize_text_field($request["_user"]) ?: 0;
 
   if (!is_numeric($_user)) {
-      $user = get_user_by("login", $_user);
-  
-      if (!$user) {
-          $response = new WP_Error("error", "Usuário não encontrado.", [
-              "status" => 404
-          ]);
-      
-          // Retorna os dados no formato de "response" de REST API.
-          return rest_ensure_response($response);
-      }
-
-      $_user = $user->ID;
+    $user = get_user_by("login", $_user);
+    if (!$user) {
+        $response = new WP_Error("error", "Usuário não encontrado.", [
+            "status" => 404
+        ]);
+        return rest_ensure_response($response);
+    }
+    $_user = $user->ID;
   }
 
   // Argumentos para serem usados na busca dos posts.
