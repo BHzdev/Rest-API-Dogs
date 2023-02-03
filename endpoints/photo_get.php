@@ -60,4 +60,59 @@ function register_api_photo_get() {
 }
 
 add_action('rest_api_init', 'register_api_photo_get');
+
+function api_photos_get($request) {
+  $_total = sanitize_text_field($request["_total"]) ?: 6;
+  $_page = sanitize_text_fie   ld($request["_page"]) ?: 1;
+  $_user = sanitize_text_field($request["_user"]) ?: 0;
+
+  if (!is_numeric($_user)) {
+      $user = get_user_by("login", $_user);
+  
+      if (!$user) {
+          $response = new WP_Error("error", "Usuário não encontrado.", [
+              "status" => 404
+          ]);
+      
+          // Retorna os dados no formato de "response" de REST API.
+          return rest_ensure_response($response);
+      }
+
+      $_user = $user->ID;
+  }
+
+  // Argumentos para serem usados na busca dos posts.
+  $args = [
+      "post_type" => "post",
+      "author" => 0,
+      "posts_per_page" => $_total,
+      "paged" => $_page
+  ];
+
+  // Busca dos posts.
+  $query = new WP_Query($args);
+  // Posts.
+  $posts = $query->posts;
+  $photos = [];
+
+  // Verifica se existe posts.
+  if (isset($posts)) {
+      foreach ($posts as $post) {
+          $photos[] = photo_data($post);
+      }
+  }
+
+  return rest_ensure_response($photos);
+}
+
+// Função para registrar o endpoint da API.
+function register_api_photos_get() {
+  register_rest_route('api', '/photo', [
+      'methods' => WP_REST_Server::READABLE,
+      'callback' => 'api_photos_get'
+  ]);
+}
+
+// Faz com que a função de registro ocorra na hora em que a api inicia.
+add_action('rest_api_init', 'register_api_photos_get');
 ?>
