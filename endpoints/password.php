@@ -63,14 +63,27 @@ function api_password_reset($request) {
 
   // Verifica se o usuário existe.
   if (empty($user)) {
-    $reponse = new WP_Erro("error", "Usuário não existe.", [
+    $response = new WP_Erro("error", "Usuário não existe.", [
         "status" => 401
     ]);
-
     return rest_ensure_response($response);
   }
 
-  return rest_ensure_response("Email enviado.");
+  // Confere se a key e o login são válidos.
+  $check_key = check_password_reset_key($key, $login);
+
+  // Se a key e o login forem invalidos retorna esse erro.
+  if (is_wp_error($check_key)){
+    $response = new WP_Erro("error", "Token Expirado.", [
+      "status" => 401
+    ]);
+    return rest_ensure_response($response);
+  }
+
+  // Se a key e o login forem validos, a senha é resetada
+  reset_password($user, $password);
+
+  return rest_ensure_response("Senha alterada.");
 }
 
 // Função para registrar o endpoint da API.
@@ -82,5 +95,4 @@ function register_api_password_reset() {
 }
 
 add_action('rest_api_init', 'register_api_password_reset');
-
 ?>
