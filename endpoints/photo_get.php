@@ -37,6 +37,7 @@ function api_photo_get($request) {
   // Atualiza o valor de acessos no banco.
   update_post_meta($post->ID, "acessos", $photo["acessos"]);
 
+  // Busca os comentários do post
   $comments = get_comments([
     'post-id' => $post_id,
     'order' => 'ASC'
@@ -46,8 +47,8 @@ function api_photo_get($request) {
     'photo' => $photo,
     'comments' => $comments
   ]; 
-  
-  return rest_ensure_response($photo);
+
+  return rest_ensure_response($response);
 }
 
 // Função para registrar o endpoint da API.
